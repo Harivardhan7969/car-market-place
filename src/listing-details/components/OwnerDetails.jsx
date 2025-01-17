@@ -1,21 +1,22 @@
 import { Button } from '@/components/ui/button'
 import Service from '@/Shared/Service';
-import { useUser } from '@supabase/auth-helpers-react';
+import { useUser } from '@clerk/clerk-react';
+// import { useUser } from '@supabase/auth-helpers-react';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
 function OwnerDetails({ carDetails }) {
 
-    const user = useUser();
+    const { user } = useUser();
 
     const navigation = useNavigate();
 
     const OnMessageOwnerButtonClick = async () => {
-        const userId = user.email.split('@')[0];
+        const userId = user?.primaryEmailAddress?.emailAddress.split('@')[0];
         const ownerUserId = carDetails?.createdBy.split('@')[0];
         //Create Current User ID
         try {
-            await Service.CreateSendBirdUser('nanuu', 'nanii', 'https://lh3.googleusercontent.com/a/ACg8ocKf1Q-YkXtPK6ULgo0uFzZJwViBwkkHms-R3635j8VZVj5cPL_P=s288-c-no')
+            await Service.CreateSendBirdUser(userId, user?.fullName, user?.imageUrl)
                 .then(resp => {
                     console.log(resp);
                 })
@@ -29,7 +30,7 @@ function OwnerDetails({ carDetails }) {
         } catch (e) { }
         // Create Channel
         try {
-            await Service.CreateSendBirdChannel(['nanii', 'ravii'], carDetails?.listingTitle)
+            await Service.CreateSendBirdChannel([userId, ownerUserId], carDetails?.listingTitle)
                 .then(resp => {
                     console.log(resp);
                     console.log("Chaneel Created");

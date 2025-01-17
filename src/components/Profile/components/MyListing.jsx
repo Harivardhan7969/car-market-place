@@ -2,7 +2,7 @@ import CarItem from '@/components/CarItem'
 import { Button } from '@/components/ui/button'
 import Service from '@/Shared/Service'
 import FormatResult from '@/Shared/Service'
-import { useUser } from '@supabase/auth-helpers-react'
+// import { useUser } from '@supabase/auth-helpers-react'
 import { db } from 'D:/React-work space/car-marketplace-supabse/Configs'
 import { CarImages, CarListing } from 'D:/React-work space/car-marketplace-supabse/Configs/schema'
 import { desc, eq } from 'drizzle-orm'
@@ -10,9 +10,10 @@ import { desc, eq } from 'drizzle-orm'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaTrashAlt } from "react-icons/fa";
+import { useUser } from '@clerk/clerk-react'
 
 function MyListing() {
-    const user = useUser();
+    const { user } = useUser();
     const [carList, setCarList] = useState([]);
     const navigate = useNavigate();
 
@@ -25,7 +26,7 @@ function MyListing() {
     const GetUserCarListing = async () => {
         const result = await db.select().from(CarListing)
             .leftJoin(CarImages, eq(CarListing.id, CarImages.carListingId))
-            .where(eq(CarListing.createdBy, user.email))
+            .where(eq(CarListing.createdBy, user?.primaryEmailAddress?.emailAddress))
             .orderBy(desc(CarListing.id))
         const resp = Service.FormatResult(result);
         setCarList(resp);

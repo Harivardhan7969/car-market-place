@@ -14,6 +14,7 @@ import { Toaster } from "@/components/ui/sonner"
 import SearchByCategory from './components/search/[category]'
 import SearchByOptions from './components/search/index'
 import ListingDetails from './listing-details/[id]'
+import { ClerkProvider } from '@clerk/clerk-react'
 
 
 
@@ -58,14 +59,19 @@ const router = createBrowserRouter([
 
 ])
 
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <SessionContextProvider supabaseClient={supabase}>
+    {/* <SessionContextProvider supabaseClient={supabase}>
       <RouterProvider router={router} />
       <Toaster />
-
-    </SessionContextProvider>
-
-  </StrictMode>,
+    </SessionContextProvider> */}
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <RouterProvider router={router} />
+      <Toaster />
+    </ClerkProvider>
+  </StrictMode>
 )
+
+

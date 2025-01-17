@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { App as SendbirdApp, SendBirdProvider } from '@sendbird/uikit-react';
 import '@sendbird/uikit-react/dist/index.css';
-import { useUser } from '@supabase/auth-helpers-react';
+// import { useUser } from '@supabase/auth-helpers-react';
 
 import { GroupChannel } from '@sendbird/uikit-react/GroupChannel';
 import { GroupChannelList } from '@sendbird/uikit-react/GroupChannelList';
+import { useUser } from '@clerk/clerk-react';
 
 function Inbox() {
 
-    const user = useUser();
+    const { user } = useUser();
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
         if (user) {
-            const id = (user.email).split('@')[0];
+            const id = (user?.primaryEmailAddress.emailAddress).split('@')[0];
             setUserId(id);
 
         }
